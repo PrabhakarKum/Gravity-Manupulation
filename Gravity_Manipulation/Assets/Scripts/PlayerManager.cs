@@ -50,11 +50,19 @@ public class PlayerManager : MonoBehaviour
             return;
 
         float distance = Vector3.Distance(transform.position, anchorTransform.position);
+        Debug.Log("player distance of centre: "+ distance);
         float maxDistance = 50f;
 
-        if (distance >= maxDistance || distance <= -maxDistance)
+        if (distance >= maxDistance || transform.position.y < -50)
         {
-            Debug.Log("Player Distance: " + distance);
+            Debug.Log("Distance exceeded maxDistance! Game should end.");
+            
+            if (GameOver.Instance == null)
+            {
+                Debug.LogError("GameOver.Instance is null! Game cannot end.");
+                return;
+            }
+            
             GameOver.Instance.GameEnd(1, 0);
         }
     }

@@ -27,6 +27,7 @@ public class PlayerLocomotionManager : MonoBehaviour
     [SerializeField] private float fallStartYVelocity = -5f;
     [SerializeField] private float jumpHeight = 3f;
     private bool fallingVelocityHasBeenSet;
+    public float inAirTimer = 0;
 
     [Header("Jump Flags")] 
     [SerializeField] private Vector3 jumpDirection;
@@ -44,6 +45,7 @@ public class PlayerLocomotionManager : MonoBehaviour
         {
             if (yVelocity.y < 0)
             {
+                inAirTimer = 0;
                 fallingVelocityHasBeenSet = false;
                 yVelocity.y = groundedYVelocity;
             }
@@ -55,6 +57,8 @@ public class PlayerLocomotionManager : MonoBehaviour
                 fallingVelocityHasBeenSet = true;
                 yVelocity.y = fallStartYVelocity;
             }
+            inAirTimer += Time.deltaTime;
+            _playerManager.animator.SetFloat("InAirTime", inAirTimer);
             yVelocity.y += gravityForce * Time.deltaTime;
         }
         
@@ -147,6 +151,7 @@ public class PlayerLocomotionManager : MonoBehaviour
         
         if(!_playerManager.isGrounded)
             return;
+        
         _playerManager.playerAnimatorManager.PlayTargetActionAnimation("Falling Idle");
         yVelocity.y = Mathf.Sqrt(jumpHeight * -2f * gravityForce);
         _playerManager.isJumping = true;
